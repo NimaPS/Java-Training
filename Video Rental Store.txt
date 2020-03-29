@@ -1,0 +1,168 @@
+package delete;
+
+
+import javax.swing.*;
+
+
+import java.util.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class Delete extends JFrame implements ActionListener{
+
+	
+	static Connection getConn() throws Exception{
+		
+		   try {
+			     Connection con = DriverManager.getConnection("jdbc:mysql://localhost/videorental","root","");
+			     return con;
+			     } 
+			     catch(SQLException ex){
+			     JOptionPane.showMessageDialog(null,ex);
+			     
+			     return null;
+			     }
+			    }
+	
+		Menu operation ;
+	    MenuBar myMenuBar ;
+	   
+	    static Connection con=null;
+		Statement st=null;
+		ResultSet rs= null;
+		
+		
+		/////////////
+		 MenuItem rent;
+		 JPanel rentpanel;
+			JTextArea rentarea;
+			JButton ok_rent;
+			JTextField rentfield;
+			Container contains4;
+			
+	    
+	public Delete() {
+		
+		this.setVisible(true);
+		this.setSize(700,500);
+		this.setTitle("DB menu");
+		this.setLayout(new GridLayout (3,5));
+		this.setLocation(100,100);
+		
+		 
+	  
+		operation = new Menu( "operation" );
+	     myMenuBar = new MenuBar();
+	     rentpanel=new JPanel();
+	     rent= new MenuItem("rent video");
+	     operation.add(rent);
+	     
+	     myMenuBar.add(operation);
+	     this.setMenuBar( myMenuBar );
+	     
+	     ////
+		
+	     
+	     
+	     ok_rent=new JButton("ok rent");
+		    rentarea=new JTextArea();
+	     rentfield= new JTextField("                             ");
+		     
+		     rentpanel.setLayout(new FlowLayout());
+		     rentpanel.add(rentarea);
+		     
+		     rentpanel.add(rentfield);
+		     rentpanel.add(ok_rent);
+		     rent.addActionListener(this);
+		     ok_rent.addActionListener(this);
+		   
+		     
+		  
+		   
+	}
+	
+	public void actionPerformed(ActionEvent e)  {
+	
+		
+		if(e.getSource()== rent ) {
+			contains4 = getContentPane();
+            contains4.removeAll();
+            contains4.add(rentpanel);
+            contains4.validate();
+            contains4.repaint();
+				
+		}
+
+			//-----------o k---------------
+
+		else
+			
+			if(e.getSource()== ok_rent ) {
+				
+				
+				try {
+					
+					con=getConn();
+					Statement st = con.createStatement();
+					
+					String s= "select * FROM vi WHERE videoname = '"+rentfield.getText()+"'";
+					String s2="DELETE FROM vi WHERE videoname = '"+rentfield.getText()+"'"; 
+					
+					
+					
+					
+					rs=st.executeQuery(s);
+					System.out.println("hi");
+					while(rs.next()) {
+						 if(rs.getString(5).equals("")) {
+							 String x=rs.getString(1);
+							 rentarea.setText(rs.getString(1) +" is rented for you now");
+							 rentarea.append(" please enter 1- the date od the day, '/n' 2-the date when u return the boook, '/n' 3- yourname '/n' in order");
+							 rs=st.executeQuery(s2);
+							 
+							 JTextField rentdate=new JTextField();JTextField returndate=new JTextField();JTextField yourname=new JTextField();
+							 this.add(rentdate);
+							 this.add(returndate);
+							 this.add(yourname);
+							 
+							 String s3="INSERT INTO vi(videoname, videolength, rentdate, returndate, customername, rate, datereleased) VALUES (";
+							 s3+=x+","+"-"+","+rentdate.getText()+","+ returndate.getText()+","+yourname.getText();
+							 s3+=","+"-"+","+"-"+")";
+							 
+							 rs=st.executeQuery(s3);
+						 
+						 }
+						 else
+							 rentarea.setText("sorry, the film is rented for a person");
+						 this.add(rentarea);
+						 System.out.println( rentarea.getText());
+							 
+						
+						
+					}
+					
+					
+				}catch(Exception ee) {
+					System.out.println("exception occur or video deos not exist");
+				}
+			
+		}
+	
+	
+
+}
+	
+	public static void main(String [] s) {
+		new Delete();
+	}
+	
+	
+}
+
+
