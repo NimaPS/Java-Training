@@ -1,0 +1,569 @@
+
+import javax.swing.*;
+
+import com.mysql.jdbc.PreparedStatement;
+
+import java.util.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+	
+	public class DBM extends JFrame implements ActionListener {
+		private Container contain, contains, contains2, contains3;
+			Menu File ;
+		    Menu operation ;
+		    MenuBar myMenuBar ;
+		    MenuItem Import, export,exit,add,delete,searchvideo,rent,Return,display, searchCust;
+			static Connection con=null;
+			Statement st=null;
+			ResultSet rs= null;
+			JPanel displayPanel, mainpanel;
+			JTextArea ta;
+			TextField t;
+			JPanel p ;
+			JLabel l; 
+			JButton ok,ok_cust,ok_return; 
+			
+			
+			JPanel deletepanel;
+			JTextArea deletearea;
+			JButton ok_delete;
+			JTextField deletefield;
+			
+			JPanel displaypanel;
+			JTextArea displayarea;
+			
+			
+				JPanel searchcustomerpanel;
+				JTextArea searchcustomerarea;
+				JButton ok_searchCust;
+				JTextField searchCustomerfield;
+				
+				
+					JPanel searchvideopanel;
+					JTextArea searchvideoarea;
+					JButton ok_searchvideo;
+					JTextField searchvideofield;
+					
+					
+					 	
+						JPanel addpanel;
+						JButton ok_add;
+						JTextField vidName,vidLength,rentaldate,custName,returndate,dateReleased,rate;
+						JLabel name,length,rentdate,cName,retdate,daterelease,rat;
+			
+		public DBM(){
+			this.setVisible(true);
+			this.setSize(700,500);
+			this.setTitle("DB menu");
+			this.setLayout(new GridLayout (3,5));
+			this.setLocation(100,100);
+			delete= new MenuItem("delete a video");
+			   ok_delete=new JButton("ok delete");
+			     deletearea=new JTextArea();
+			     deletefield= new JTextField("                             ");
+			     deletepanel= new JPanel();
+			     deletepanel.setLayout(new FlowLayout());
+			     deletepanel.add(deletearea);
+			     
+			     deletepanel.add(deletefield);
+			     deletepanel.add(ok_delete);
+			     delete.addActionListener(this);
+			     ok_delete.addActionListener(this);
+			     
+			     
+			     
+			     displayarea=new JTextArea();
+			     displaypanel= new JPanel();
+			     displaypanel.setLayout(new FlowLayout());
+			     displaypanel.add(displayarea);
+			     display= new MenuItem("display a video");
+			     display.addActionListener(this);
+			     
+			     
+			     searchCust= new MenuItem("search Customer");
+			     ok_searchCust=new JButton("ok_searchCustomer");
+			     searchCustomerfield= new JTextField("                             ");
+			     searchcustomerarea=new JTextArea();
+			     searchcustomerpanel= new JPanel();
+			     searchcustomerpanel.setLayout(new FlowLayout());
+			     searchcustomerpanel.add(searchcustomerarea);
+			     searchcustomerpanel.add(searchCustomerfield);
+			     searchcustomerpanel.add(ok_searchCust);
+			     searchCust.addActionListener(this);
+			     ok_searchCust.addActionListener(this);
+			     
+			     
+				    searchvideo= new MenuItem("search video");
+				     ok_searchvideo=new JButton("ok_searchvideo");
+				     searchvideofield= new JTextField("                             ");
+				     searchvideoarea=new JTextArea();
+				     searchvideopanel= new JPanel();
+				     searchvideopanel.setLayout(new FlowLayout());
+				     searchvideopanel.add(searchvideoarea);
+				     searchvideopanel.add(searchvideofield);
+				     searchvideopanel.add(ok_searchvideo);
+				     searchvideo.addActionListener(this);
+				     ok_searchvideo.addActionListener(this);
+			 
+				     addpanel=new JPanel();
+				     	
+				     add= new MenuItem("add video");
+				     ok_add=new JButton("ok_add");
+				       name=new JLabel("video name");
+					   length=new JLabel("video length");
+					   rentdate=new JLabel("rent date");
+					   cName=new JLabel("custome name");
+					   retdate=new JLabel("return date");
+					   daterelease=new JLabel("released date");
+					   rat=new JLabel("video rate");
+					   	  vidName= new JTextField();
+						  vidLength= new JTextField();
+						  rentaldate= new JTextField();
+						  custName= new JTextField();
+						  returndate= new JTextField();
+						  dateReleased= new JTextField();
+						  rate= new JTextField();
+				       addpanel.setLayout(new GridLayout(8,2));
+					   addpanel.add(name);addpanel.add(vidName);
+					   addpanel.add(length);addpanel.add(vidLength);
+					   addpanel.add(rentdate);addpanel.add(rentaldate);
+					   addpanel.add(retdate);addpanel.add(returndate);
+					   addpanel.add(daterelease);addpanel.add(dateReleased);
+					   addpanel.add(rat);addpanel.add(rate);
+					   addpanel.add(cName);addpanel.add(custName);
+					   addpanel.add(ok_add);
+					   
+					   
+					   add.addActionListener(this);
+					   ok_add.addActionListener(this);
+				     
+				     
+				     
+			 File = new Menu( "File" );
+		     operation = new Menu( "operation" );
+		     myMenuBar = new MenuBar();
+		     myMenuBar.add(File);
+		     myMenuBar.add(operation);
+		     this.setMenuBar( myMenuBar );
+		     
+		     Import= new MenuItem("import");
+		     export= new MenuItem("export");
+		     exit= new MenuItem("exit");
+		     add= new MenuItem("add a video");
+		     
+		     
+		     rent= new MenuItem("rent a video");
+		     Return= new MenuItem("Return a video");
+		     
+		     searchCust= new MenuItem("search customer");
+		     displayPanel= new JPanel();
+		     
+		     mainpanel=new JPanel();
+		     
+			 ta=new JTextArea("", 30,30);
+			 t= new TextField ("",20);
+			 ok=new JButton("ok");
+			 ok_cust=new JButton("ok");
+			
+			 ok_return= new JButton("ok return");
+			 
+			 
+			 
+			  
+			  
+			  
+			   
+			   
+		     
+		     Import.addActionListener(this);
+		     export.addActionListener(this);
+		     exit.addActionListener(this);
+		     add.addActionListener(this);
+		     
+		     
+		     rent.addActionListener(this);
+		     Return.addActionListener(this);
+		     display.addActionListener(this);
+		     searchCust.addActionListener(this);
+		     ok.addActionListener(this);
+		    
+		     ok_cust.addActionListener(this);
+		     ok_return.addActionListener(this);
+		    
+		     
+		
+		     
+		     displayPanel.setLayout(new FlowLayout());
+		     displayPanel.add(ta);
+		     
+		     File.add(Import);
+		     File.addSeparator();
+		     File.add(export);
+		     File.addSeparator();
+		     File.add(exit);
+		     
+		     operation.add(add);
+		     operation.addSeparator();
+		     operation.add(delete);
+		     operation.addSeparator();
+		     operation.add(searchvideo);
+		     operation.addSeparator();
+		     operation.add(rent);
+		     operation.addSeparator();
+		     operation.add(Return);
+		     operation.addSeparator();
+		     operation.add(display);
+		     operation.addSeparator();
+		     operation.add(searchCust);
+		     
+		     this.add(mainpanel);
+		     
+		     
+		      p=new JPanel();
+		      p.setLayout(new FlowLayout());
+		      l=new JLabel("enter the name");
+		      t=new TextField("                                   ");
+		      p.add(l);
+		      p.add(t);
+		      
+				 
+		      displayPanel.add(ta); 
+		
+		}
+		
+		
+		static Connection getConn() throws Exception{
+		
+			   try {
+				  
+				     Connection con = DriverManager.getConnection("jdbc:mysql://localhost/videorental","root","");
+				//     JOptionPane.showMessageDialog(null, "Connected");
+				     
+				     return con;
+				     
+				     } 
+				     catch(SQLException ex){
+				     JOptionPane.showMessageDialog(null,ex);
+				     
+				     return null;
+				     
+				     
+				     }
+				    
+		
+	}
+
+		
+		public void actionPerformed(ActionEvent e)  {
+			
+			
+			//----------------------------- import ---------------------------
+			if(e.getSource()==Import) {
+				try {
+				
+				con=getConn();
+				 st= con.createStatement();
+				 String s=new String("");
+				 
+				 rs=st.executeQuery("Select * from vi");
+				 
+				 while (rs.next()) {
+					 
+					s+= "\n " + rs.getString(1)+"  "+rs.getString(2)+"  "+rs.getString(3)+"  "+rs.getString(4)+"  "+rs.getString(5)+"  "+rs.getString(6)+"  "+rs.getString(7);
+					s+="\n ";
+					
+				 }
+				 ta.setText(s);
+				this.add(displayPanel);
+				System.out.println(s);
+				
+			}catch(Exception ee) {
+				System.out.println("exception occur");
+			}
+	
+			}
+			
+			
+			//----------------------------- exit---------------------------
+else 
+				
+				if(e.getSource()==  exit) {
+				
+				this.setVisible(false);
+			}
+			
+			
+			
+			
+			//----------------------------- return video---------------------------
+			
+			
+								else 
+									if(e.getSource()== Return ) {
+										 this.add(addpanel);
+										 }
+									
+						
+			
+			//----------------------------- add video---------------------------
+
+				if(e.getSource()== add ) {
+					 this.add(addpanel);
+					 }
+
+
+			//----------------- ok_add -----------------
+
+				else
+					if(e.getSource()== ok_add ) {
+						try {
+							int i=0;
+							
+						con=getConn();
+						 st= con.createStatement();
+						 String s=new String("");
+						
+						 rs=st.executeQuery("Select * from vi");
+						 
+						 
+						 
+						 while (rs.next()) {
+							 
+							 if (rs.getString(1)==vidName.getText()) {
+								 i++;
+							 }}
+						 System.out.println(i);
+						 if(i==0) {
+								 
+							 String r="INSERT INTO vi(videoname, videolength, rentdate, returndate, customername, rate, datereleased) VALUES (";
+							 r+=vidName.getText()+","+vidLength.getText()+","+rentaldate.getText()+","+ returndate.getText()+","+custName.getText();
+							 r+=","+rate.getText()+","+dateReleased.getText()+")";
+							 st.execute(r);
+							 System.out.println("added");
+						 }
+						 else {
+							 System.out.println("already exist");
+						
+						 }
+						 
+					
+						
+					}catch(Exception ee) {
+						System.out.println("exception occur");
+					}
+			
+				}
+
+
+			
+			//----------------------------- a  display---------------------------
+			
+			
+								else
+									
+									if(e.getSource()== display ) {
+
+										try {
+											contains = getContentPane();
+							                contains.removeAll();
+							               
+							                
+											con=getConn();
+											 st= con.createStatement();
+											 String s=new String("");
+											 
+											 rs=st.executeQuery("Select * from vi");
+											 
+											 while (rs.next()) {
+												 
+												 s+= "\n " + rs.getString(1)+"  "+rs.getString(2)+"  "+rs.getString(3)+"  "+rs.getString(4)+"  "+rs.getString(5)+"  "+rs.getString(6)+"  "+rs.getString(7);
+													s+="\n ";
+												
+											 }
+											 displayarea.setText(s);
+
+											 contains.add(displaypanel);
+								                contains.validate();
+								                contains.repaint();
+											 
+											System.out.println(s);
+											
+										}catch(Exception ee) {
+											System.out.println("exception occur");
+										}
+									
+								}
+			
+			//----------------------------- delete---------------------------
+
+								else
+									if(e.getSource()== delete ) {
+										contain = getContentPane();
+						                contain.removeAll();
+						                contain.add(deletepanel);
+						                contain.validate();
+						                contain.repaint();
+											
+									}
+
+										//-----------o k---------------
+
+									else
+										
+										if(e.getSource()== ok_delete ) {
+											
+											
+											try {
+												
+												con=getConn();
+												Statement st = con.createStatement();
+												
+												String s= "DELETE FROM vi WHERE videoname = '"+deletefield.getText()+"'";
+												
+												st.execute(s);
+												
+												System.out.println("hi");
+												 
+													
+														deletearea.setText(deletefield.getText());
+														deletepanel.setLayout(new FlowLayout());
+														deletepanel.add(deletearea);
+														this.add(deletepanel);
+												 
+												 System.out.print(deletearea.getText());
+											}catch(Exception ee) {
+												System.out.println("exception occur");
+											}
+										
+									}
+								
+								
+								//----------------------------- search customer---------------------------
+								
+
+										else
+											if(e.getSource()== searchCust ) {
+												
+												contains2 = getContentPane();
+								                contains2.removeAll();
+								                contains2.add(searchcustomerpanel);
+								                contains2.validate();
+								                contains2.repaint();
+												
+											}
+
+												//-----------o k---------------
+
+											else
+												
+												if(e.getSource()== ok_searchCust ) {
+													
+													
+													try {
+														
+														con=getConn();
+														 st= con.createStatement();
+														 String s=new String("not found");
+														 
+															rs=st.executeQuery("select * from vi");
+															String x=new String("");
+															String ss=searchCustomerfield.getText();
+															while(rs.next()) {
+																
+																String ss2= rs.getString(5);
+																
+																if (rs.getString(5).equals(ss)) {
+																	s= "\n " + ss;
+																	x="  rented   \" "+rs.getString(1)+" \"   from date: "+rs.getString(3);
+																	x+=" , to date:"+rs.getString(4);
+																	
+																	
+																}}
+															
+															System.out.println(s);
+															searchcustomerarea.setText(" found  "+s+x);
+															searchcustomerpanel.setLayout(new FlowLayout());
+																searchcustomerpanel.add(searchcustomerarea);
+																this.add(searchcustomerpanel);
+													}
+														
+														catch(Exception ee) {
+														System.out.println("exception occur or customer not exist");
+													}
+												
+												
+												}
+								
+								//----------------------------- search video---------------------------
+								
+												else
+													
+
+													if(e.getSource()== searchvideo ) {
+														
+														
+														contains2 = getContentPane();
+										                contains2.removeAll();
+										                contains2.add(searchvideopanel);
+										                contains2.validate();
+										                contains2.repaint();
+														
+													}
+
+														//-----------o k---------------
+
+													else
+														
+														if(e.getSource()== ok_searchvideo ) {
+															
+															
+															try {
+																
+																con=getConn();
+																 st= con.createStatement();
+																 String s=new String("not found");
+																 
+																	rs=st.executeQuery("select * from vi");
+																	String x=new String("");
+																	String ss=searchvideofield.getText();
+																	while(rs.next()) {
+																		
+																		String ss2= rs.getString(1);
+																		
+																		if (rs.getString(1).equals(ss)) {
+																			s= "\n " + ss;
+																			x=" the \" "+rs.getString(1)+" \"  is rented from date: "+rs.getString(3);
+																			x+=" , to date:"+rs.getString(4);
+																			
+																			
+																		}}
+																	
+																	System.out.println(s);
+																	searchvideoarea.setText(s+x);
+																	searchvideopanel.setLayout(new FlowLayout());
+																	searchvideopanel.add(searchvideoarea);
+																		this.add(searchvideopanel);
+															}
+																
+																catch(Exception ee) {
+																System.out.println("exception occur or customer not exist");
+															}
+														
+														
+														}		
+		}
+		
+		
+public static void main(String [] s) {
+	new DBM();
+}
+}
+
+
